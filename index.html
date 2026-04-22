@@ -1448,7 +1448,17 @@
           desc: productDesc.substring(0, 150) + (productDesc.length > 150 ? '...' : ''),
           tags: tags,
           status: 'pending',
-          criteriaCount: criteriaCount
+          criteriaCount: criteriaCount,
+          // Contact information
+          contactName: document.getElementById('contactName').value.trim(),
+          contactTitle: document.getElementById('contactTitle').value.trim(),
+          contactEmail: document.getElementById('contactEmail').value.trim(),
+          contactPhone: document.getElementById('contactPhone').value.trim(),
+          website: document.getElementById('orgWebsite').value.trim(),
+          fullDescription: productDesc,
+          orgSize: document.getElementById('orgSize').value,
+          ethicsPolicy: ethicsPolicy,
+          additionalNotes: document.getElementById('additionalNotes').value.trim()
         };
         
         orgs.push(newOrg);
@@ -1586,7 +1596,43 @@
               </div>
             </div>
             <div class="admin-org-details">
-              <p><strong>Description:</strong> ${o.desc}</p>
+              <p style="margin-bottom: 1rem;"><strong>Product/Service Description:</strong> ${o.fullDescription || o.desc}</p>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; padding: 1rem; background: var(--accent-light); border-radius: 6px;">
+                <div>
+                  <p style="font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 0.25rem;">Contact Person</p>
+                  <p style="font-weight: 500;">${o.contactName || 'N/A'}</p>
+                  <p style="font-size: 0.85rem; color: var(--ink-soft);">${o.contactTitle || ''}</p>
+                </div>
+                <div>
+                  <p style="font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 0.25rem;">Contact Information</p>
+                  <p style="font-weight: 500;"><a href="mailto:${o.contactEmail}" style="color: var(--accent);">${o.contactEmail || 'N/A'}</a></p>
+                  <p style="font-size: 0.85rem; color: var(--ink-soft);">${o.contactPhone || 'No phone provided'}</p>
+                </div>
+                <div>
+                  <p style="font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 0.25rem;">Website</p>
+                  <p style="font-weight: 500;"><a href="${o.website}" target="_blank" style="color: var(--accent);">${o.website || 'N/A'}</a></p>
+                </div>
+                <div>
+                  <p style="font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 0.25rem;">Organization Size</p>
+                  <p style="font-weight: 500;">${o.orgSize || 'N/A'}</p>
+                </div>
+                <div>
+                  <p style="font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 0.25rem;">Ethics Policy</p>
+                  <p style="font-weight: 500;">${o.ethicsPolicy === 'public' ? 'Yes — publicly published' : o.ethicsPolicy === 'internal' ? 'Yes — internal only' : o.ethicsPolicy === 'development' ? 'In development' : 'No'}</p>
+                </div>
+                <div>
+                  <p style="font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 0.25rem;">Criteria Met</p>
+                  <p style="font-weight: 500;">${o.criteriaCount || o.tags.length}/7 Standards</p>
+                </div>
+              </div>
+              
+              ${o.additionalNotes ? `<div style="margin-bottom: 1rem; padding: 1rem; background: var(--bg); border-left: 3px solid var(--gold); border-radius: 4px;">
+                <p style="font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 0.25rem;">Additional Notes</p>
+                <p style="font-size: 0.9rem;">${o.additionalNotes}</p>
+              </div>` : ''}
+              
+              <p style="font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 0.5rem;">AI Standards Confirmed:</p>
               <div class="admin-org-tags">
                 ${o.tags.map(t => `<span class="admin-tag">${t}</span>`).join('')}
               </div>
