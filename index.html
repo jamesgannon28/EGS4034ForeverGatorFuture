@@ -857,6 +857,7 @@
       <li><a href="#" onclick="showPage('home')">Home</a></li>
       <li><a href="#" onclick="showPage('beliefs')">Beliefs & Structure</a></li>
       <li><a href="#" onclick="showPage('accredited')">Accredited Orgs</a></li>
+      <li><a href="#" onclick="showPage('pending')">Pending Review</a></li>
       <li><a href="#" onclick="showPage('admin')" style="color: var(--ink-muted); font-size: 0.75rem;">Admin</a></li>
       <li><a href="#" onclick="showPage('compliance')" class="nav-cta">Register for Compliance</a></li>
     </ul>
@@ -1083,19 +1084,35 @@
         <p class="section-tag" style="margin-bottom: 1rem;">Self-Assessment</p>
 
         <div class="form-group">
-          <label>Which pillars does your organization currently address? *</label>
+          <label>Which AI standards does your organization meet? (Check all that apply) *</label>
           <div class="checkbox-group">
             <label class="checkbox-item">
-              <input id="pillarEnvironmental" type="checkbox" />
-              <span>🌱 Environmental — We actively measure and minimize our AI systems' environmental impact.</span>
+              <input id="criteriaStandardOfCare" type="checkbox" />
+              <span>✓ Standard of Care for AI — We maintain high standards of care in all AI development and deployment.</span>
             </label>
             <label class="checkbox-item">
-              <input id="pillarEconomic" type="checkbox" />
-              <span>💼 Economic — We assess and report on the broader economic impact of our AI products.</span>
+              <input id="criteriaHumanOversight" type="checkbox" />
+              <span>👁 Human Oversight of AI Use — We ensure human oversight of all AI system operations.</span>
             </label>
             <label class="checkbox-item">
-              <input id="pillarSocietal" type="checkbox" />
-              <span>🤝 Societal — We adhere to fairness, transparency, and safety standards in all AI outputs.</span>
+              <input id="criteriaHumanReview" type="checkbox" />
+              <span>📋 Human Review of AI Created Portions — All AI-generated content undergoes human review.</span>
+            </label>
+            <label class="checkbox-item">
+              <input id="criteriaQualityControl" type="checkbox" />
+              <span>🎯 Quality Control System — Our quality control meets or exceeds standards for non-AI products.</span>
+            </label>
+            <label class="checkbox-item">
+              <input id="criteriaSafety" type="checkbox" />
+              <span>🛡 AI to Increase Safety — We use AI to increase the safety of our products.</span>
+            </label>
+            <label class="checkbox-item">
+              <input id="criteriaConsumerValue" type="checkbox" />
+              <span>💎 AI to Increase Consumer Value — We use AI to increase consumer value.</span>
+            </label>
+            <label class="checkbox-item">
+              <input id="criteriaQualityStandard" type="checkbox" />
+              <span>⭐ AI to Increase Quality — We use AI to increase quality and standard of care of products.</span>
             </label>
           </div>
         </div>
@@ -1161,6 +1178,28 @@
     </div>
 
     <div class="orgs-grid" id="orgs-grid">
+      <!-- Cards rendered by JS -->
+    </div>
+
+    <footer>
+      <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem;">
+        <span>© 2025 ForeverGatorFuture</span>
+        <a style="color: rgba(255,255,255,0.6); cursor:pointer;" onclick="showPage('home')">← Back to Home</a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ════════════════════════════ PENDING REVIEW PAGE ════════════════════════════ -->
+  <div id="page-pending" class="page">
+    <div class="orgs-header">
+      <p class="section-tag">Pending Review</p>
+      <h2 class="section-title">Organizations Under Review</h2>
+      <p class="section-lead">
+        The following organizations have submitted applications and are currently under review by our standards committee. Pending status indicates that the organization has met initial qualification criteria and is awaiting final accreditation approval.
+      </p>
+    </div>
+
+    <div class="orgs-grid" id="pending-orgs-grid">
       <!-- Cards rendered by JS -->
     </div>
 
@@ -1357,10 +1396,14 @@
       const orgType = document.getElementById('orgType').value;
       const productDesc = document.getElementById('productDesc').value.trim();
       
-      // Check pillars
-      const envChecked = document.getElementById('pillarEnvironmental').checked;
-      const econChecked = document.getElementById('pillarEconomic').checked;
-      const socChecked = document.getElementById('pillarSocietal').checked;
+      // Check criteria
+      const criteriaStandardOfCare = document.getElementById('criteriaStandardOfCare').checked;
+      const criteriaHumanOversight = document.getElementById('criteriaHumanOversight').checked;
+      const criteriaHumanReview = document.getElementById('criteriaHumanReview').checked;
+      const criteriaQualityControl = document.getElementById('criteriaQualityControl').checked;
+      const criteriaSafety = document.getElementById('criteriaSafety').checked;
+      const criteriaConsumerValue = document.getElementById('criteriaConsumerValue').checked;
+      const criteriaQualityStandard = document.getElementById('criteriaQualityStandard').checked;
       
       // Check ethics policy
       const ethicsPolicy = document.getElementById('ethicsPolicy').value;
@@ -1375,19 +1418,28 @@
         return;
       }
       
-      // Determine qualification status
-      const allPillarsChecked = envChecked && econChecked && socChecked;
+      // Count checked criteria
+      const criteriaCount = [criteriaStandardOfCare, criteriaHumanOversight, criteriaHumanReview, 
+                             criteriaQualityControl, criteriaSafety, criteriaConsumerValue, 
+                             criteriaQualityStandard].filter(Boolean).length;
+      
+      // Determine qualification status - must meet all 7 criteria
+      const allCriteriaMet = criteriaCount === 7;
       const hasEthicsPolicy = ethicsPolicy === 'public' || ethicsPolicy === 'internal';
-      const isQualified = allPillarsChecked && hasEthicsPolicy;
+      const isQualified = allCriteriaMet && hasEthicsPolicy;
       
       const toast = document.getElementById('toast');
       
       if (isQualified) {
         // Add to pending accreditations
         const tags = [];
-        if (envChecked) tags.push('environmental');
-        if (econChecked) tags.push('economic');
-        if (socChecked) tags.push('societal');
+        if (criteriaStandardOfCare) tags.push('standard-of-care');
+        if (criteriaHumanOversight) tags.push('human-oversight');
+        if (criteriaHumanReview) tags.push('human-review');
+        if (criteriaQualityControl) tags.push('quality-control');
+        if (criteriaSafety) tags.push('safety');
+        if (criteriaConsumerValue) tags.push('consumer-value');
+        if (criteriaQualityStandard) tags.push('quality-standard');
         
         const newOrg = {
           name: orgName,
@@ -1395,10 +1447,12 @@
           initial: orgName.charAt(0).toUpperCase(),
           desc: productDesc.substring(0, 150) + (productDesc.length > 150 ? '...' : ''),
           tags: tags,
-          status: 'pending'
+          status: 'pending',
+          criteriaCount: criteriaCount
         };
         
         orgs.push(newOrg);
+        renderPendingOrgs();
         
         toast.innerHTML = '⏳ Registration submitted! Your application is pending admin review. You meet all qualification standards.';
         toast.style.background = 'var(--gold)';
@@ -1410,10 +1464,10 @@
       } else {
         // Does not meet automatic qualification
         let reasons = [];
-        if (!allPillarsChecked) reasons.push('all three pillars must be addressed');
+        if (!allCriteriaMet) reasons.push(`all 7 AI criteria must be met (currently ${criteriaCount}/7)`);
         if (!hasEthicsPolicy) reasons.push('a written AI ethics or compliance policy is required');
         
-        toast.innerHTML = `⏳ Registration submitted for review. To qualify for automatic accreditation: ${reasons.join(' and ')}.`;
+        toast.innerHTML = `⏳ Registration submitted for review. To qualify: ${reasons.join(' and ')}.`;
         toast.style.background = '#b8986a';
         toast.style.display = 'block';
         setTimeout(() => { toast.style.display = 'none'; }, 6000);
@@ -1430,7 +1484,7 @@
       { name: 'TerraModel Inc.', type: 'Climate AI', initial: 'T', desc: 'Using AI to accelerate climate research while maintaining a net-negative carbon footprint.', tags: ['environmental'], status: 'accredited' },
     ];
 
-    const ADMIN_PASSWORD = 'gator2025';
+    const ADMIN_PASSWORD = 'password';
 
     function renderOrgs(filter) {
       const grid = document.getElementById('orgs-grid');
@@ -1461,7 +1515,30 @@
       renderOrgs(tag);
     }
 
+    function renderPendingOrgs() {
+      const grid = document.getElementById('pending-orgs-grid');
+      const pendingOrgs = orgs.filter(o => o.status === 'pending');
+      if (!pendingOrgs.length) {
+        grid.innerHTML = '<div class="orgs-empty"><p>No organizations currently under review.</p></div>';
+        return;
+      }
+      grid.innerHTML = pendingOrgs.map(o => `
+        <div class="org-card">
+          <div class="org-card-top">
+            <div class="org-avatar">${o.initial}</div>
+            <div>
+              <div class="org-name">${o.name}</div>
+              <div class="org-type">${o.type}</div>
+            </div>
+          </div>
+          <p class="org-desc">${o.desc}</p>
+          <span class="org-badge pending">Pending Review</span>
+        </div>
+      `).join('');
+    }
+
     renderOrgs('all');
+    renderPendingOrgs();
 
     // ── Admin Functions ──
     let isAdminLoggedIn = false;
@@ -1545,6 +1622,7 @@
       orgs[index].status = 'accredited';
       renderAdminPanel();
       renderOrgs('all');
+      renderPendingOrgs();
       
       const toast = document.getElementById('toast');
       toast.innerHTML = `✓ ${orgs[index].name} has been accredited!`;
@@ -1557,6 +1635,7 @@
       const orgName = orgs[index].name;
       orgs.splice(index, 1);
       renderAdminPanel();
+      renderPendingOrgs();
       
       const toast = document.getElementById('toast');
       toast.innerHTML = `✗ ${orgName} has been removed`;
